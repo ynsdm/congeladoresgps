@@ -10,44 +10,49 @@
 
     <script>
         // para obtener la ubicacion
-        window.onload = function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(enviarDatos, manejarError);
-            } else {
-                document.getElementById("estado").innerText = "Tu navegador no soporta geolocalización.";
-            }
+window.onload = function() {
+    if (navigator.geolocation) {
+        // Configuramos opciones para obligar al navegador a buscar el GPS rápido
+        const opciones = {
+            enableHighAccuracy: true,
+            timeout: 5000, // Si en 5 segundos no responde, da error
+            maximumAge: 0
         };
+        navigator.geolocation.getCurrentPosition(enviarDatos, manejarError, opciones);
+    } else {
+        document.getElementById("estado").innerText = "Tu navegador no soporta geolocalización.";
+    }
+};
 
-        function enviarDatos(posicion) {
-            const latitud = posicion.coords.latitude;
-            const longitud = posicion.coords.longitude;
-            
-            // Obtenemos el ID del código desde la URL (ej: miweb.com?codigo=A123)
-            const urlParams = new URLSearchParams(window.location.search);
-            const codigo = urlParams.get('codigo') || 'Desconocido';
+function enviarDatos(posicion) {
+    const latitud = posicion.coords.latitude;
+    const longitud = posicion.coords.longitude;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const codigo = urlParams.get('codigo') || 'Desconocido';
 
-            document.getElementById("estado").innerText = "Enviando confirmación...";
+    document.getElementById("estado").innerText = "Enviando confirmación...";
 
-            // Enviamos los datos a nuestro Backend
-            fetch('https://script.google.com/macros/s/AKfycbwQTETlkAgNwk9FPHlG3yLdS4OWmypHuW_4-AGMiL8mNcnImpj2aIlo6aWgj3szvfXVlQ/exec', {
-    method: 'POST',
-    headers: {
-        // Esto le permite a Google entenderse con tu computadora local
-        'Content-Type': 'text/plain;charset=utf-8' 
-    },
-    body: JSON.stringify({ codigo: codigo, lat: latitud, lon: longitud })
-})
-.then(response => {
-    document.getElementById("estado").innerText = "¡Escaneo registrado con éxito!";
-})
-.catch(error => {
-    document.getElementById("estado").innerText = "Error al enviar al servidor.";
-    console.error(error);
-});
+    // Tu URL real de Google Apps Script
+    fetch('TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ codigo: codigo, lat: latitud, lon: longitud })
+    })
+    .then(() => {
+        document.getElementById("estado").innerText = "¡Escaneo registrado con éxito!";
+    })
+    .catch(err => {
+        document.getElementById("estado").innerText = "Error al enviar datos.";
+        console.error(err);
+    });
+}
 
-        function manejarError(error) {
-            document.getElementById("estado").innerText = "Es necesario permitir la ubicación para registrar el escaneo.";
-        }
+// ASEGÚRATE DE TENER ESTA FUNCIÓN ESCRITA:
+function manejarError(error) {
+    console.warn("Error de GPS: " + error.message);
+    document.getElementById("estado").innerText = "Por favor, activa el GPS y permite la ubicación para registrar el escaneo.";
+}
     </script>
 </body>
 </html>
