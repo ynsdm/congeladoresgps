@@ -34,7 +34,7 @@ function enviarDatos(posicion) {
     document.getElementById("estado").innerText = "Enviando confirmación...";
 
     // Tu URL real de Google Apps Script
-    fetch('TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI', {
+    fetch('https://script.google.com/macros/s/AKfycbxxwVeed6LTp5_hcuS-UVPChEp-vLXy07PL5EW_6fjxRVbqj_exKHzQiXUKvpHYiCPMYg/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ codigo: codigo, lat: latitud, lon: longitud })
