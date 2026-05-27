@@ -30,15 +30,20 @@
 
             // Enviamos los datos a nuestro Backend
             fetch('https://script.google.com/macros/s/AKfycbw9PH1zolDWux_ZjOPcZV_alqZyofUHynoL6zx-cVnbB18CjREsiG4_ER3PZqE5kIhyaw/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ codigo: codigo, lat: latitud, lon: longitud })
-            })
-            .then(response => {
-                if(response.ok) document.getElementById("estado").innerText = "¡Escaneo registrado con éxito!";
-            });
-        }
+    method: 'POST',
+    headers: {
+        // Esto le permite a Google entenderse con tu computadora local
+        'Content-Type': 'text/plain;charset=utf-8' 
+    },
+    body: JSON.stringify({ codigo: codigo, lat: latitud, lon: longitud })
+})
+.then(response => {
+    document.getElementById("estado").innerText = "¡Escaneo registrado con éxito!";
+})
+.catch(error => {
+    document.getElementById("estado").innerText = "Error al enviar al servidor.";
+    console.error(error);
+});
 
         function manejarError(error) {
             document.getElementById("estado").innerText = "Es necesario permitir la ubicación para registrar el escaneo.";
